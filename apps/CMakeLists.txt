@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 3.11-3.18)
+
+
+file( GLOB APP_SOURCES "${CMAKE_SOURCE_DIR}/apps/*.cpp" )
+
+add_custom_target(copy_resources ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${PROJECT_SOURCE_DIR}/resources
+    ${PROJECT_BINARY_DIR}/resources
+    COMMENT "Copying resources into binary directory ${PROJECT_BINARY_DIR}"
+    )
+
+
+
+foreach( APP_SOURCE ${APP_SOURCES} )
+    get_filename_component(APP_NAME ${APP_SOURCE} NAME_WE)
+    
+    project(${APP_NAME})
+    add_executable( ${APP_NAME} ${APP_SOURCE} )
+    
+    target_link_libraries(${APP_NAME} lib)
+
+    target_compile_features(${APP_NAME} PUBLIC cxx_std_20)
+endforeach( APP_SOURCE ${APP_SOURCES} )
+
